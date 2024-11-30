@@ -27,7 +27,7 @@ class UsersTableSeeder extends Seeder
                 
             ],
              [
-                'username' => 'user2@gmail.com',
+                'username' => 'user3@gmail.com',
                 'password' => \bcrypt('1234'), // password
                 'created_at' => \now(),
                 
