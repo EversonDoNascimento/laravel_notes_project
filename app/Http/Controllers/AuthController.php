@@ -55,14 +55,18 @@ class AuthController extends Controller
         $user->save();
 
         // set session
-        session(
-            [
-                'id' => $user->id,
-                'username' => $user->username
-            ]
-        );
+        // session(
+        //     [
+        //         'id' => $user->id,
+        //         'username' => $user->username
+        //     ]
+        // );
+        \session()->put('user', [
+            'id' => $user->id,
+            'username' => $user->username
+        ]);
 
-        echo "Login ok!";
+        return redirect()->to('/');
 
         // get all the users from the database
         // $users = User::all()->toArray();
