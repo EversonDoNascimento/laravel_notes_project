@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Services\Operations;
 use Illuminate\Http\Request;
 
 class MainController extends Controller
@@ -19,7 +20,23 @@ class MainController extends Controller
         return view('home', ['notes' => $notes]);
     }
 
-    public function newNote(){
-        echo "new note";
+    public function newNote(Request $request){
+        return \view('newNote');
     }
+    public function edit($id){
+        $idDecode = Operations::decryptId($id);
+        return \view('edit', ['id' => $idDecode]);
+    }
+
+    public function delete($id){
+        $idDecode = Operations::decryptId($id);
+        echo $idDecode;
+    }
+    public function newNoteSubmit(Request $request){
+        dd($request);
+        die();
+        return \redirect()->route('newNote');
+    }
+    
+
 }
