@@ -26,7 +26,52 @@ class MainController extends Controller
     }
     public function edit($id){
         $idDecode = Operations::decryptId($id);
-        return \view('edit', ['id' => $idDecode]);
+        // Get note
+        $note = Note::find($idDecode);
+        return \view('edit', ['note' => $note]);
+    }
+
+    /**
+     * Submits an edited note.
+     * 
+     * Validates the request with the following rules:
+     * - The title must be required and not longer than 255 characters.
+     * - The note must be required and not shorter than 5 characters.
+     * 
+     * Verifies if the note exists.
+     * 
+     * Updates the note with the validated data.
+     * 
+     * Redirects to the home route.
+     * 
+     * @param Request $request
+     * @return Response
+     */
+    public function editSubmit(Request $request){
+        // Validate request
+        $request->validate([
+            'id' => 'required',
+            'text_title' => 'required|max:255',
+            'text_note' => 'required|min:5',
+        ],[
+            'id.required' => 'Id is required',
+            'text_title.required' => 'Title is required',
+            'text_title.max' => 'Title is too long',
+            'text_note.required' => 'Note is required',
+            'text_note.min' => 'Note is too short'
+        ]);
+        $idDecode = Operations::decryptId($request->id);
+        // Verify if note exists
+        $findNote = Note::find($idDecode);
+        if(!$findNote){
+            return \redirect()->route('home');
+        }
+        // Update note
+        $findNote->update([
+            'title' => $request->text_title,
+            'text' => $request->text_note
+        ]);
+        return \redirect()->route('home');
     }
 
     public function delete($id){

@@ -20,23 +20,34 @@
             </div>
 
             <!-- form -->
-            <form action="#" method="post">
+            <form action="{{route('editSubmit')}}" method="post">
+                @csrf
                 <div class="row mt-3">
                     <div class="col">
+                        <input type="hidden" name="id" value="{{ Crypt::encrypt($note->id) }}">
+                        @error('id')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
                         <div class="mb-3">
                             <label class="form-label">Note Title</label>
-                            <input type="text" class="form-control bg-primary text-white" name="text_title">
+                            <input type="text" class="form-control bg-primary text-white" name="text_title" value="{{ old('text_title', $note->title) }}">
+                            @error('text_title')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Note Text</label>
-                            <textarea class="form-control bg-primary text-white" name="text_note" rows="5"></textarea>
+                            <textarea class="form-control bg-primary text-white" name="text_note" rows="5" >{{ old('text_note', $note->text) }}</textarea>
+                            @error('text_note')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
                         </div>
                     </div>
                 </div>
                 <div class="row mt-3">
                     <div class="col text-end">
                         <a href="{{ route('home') }}" class="btn btn-primary px-5"><i class="fa-solid fa-ban me-2"></i>Cancel</a>
-                        <button type="submit" class="btn btn-secondary px-5"><i class="fa-regular fa-circle-check me-2"></i>Save</button>
+                        <button type="submit" class="btn btn-secondary px-5"><i class="fa-regular fa-circle-check me-2"></i>Update</button>
                     </div>
                 </div>
             </form>
