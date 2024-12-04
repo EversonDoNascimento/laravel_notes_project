@@ -12,7 +12,7 @@ class MainController extends Controller
     public function index(){
         // list of notes
         $user = \session('user');
-        $notes = User::find($user['id'])->notes()->get()->toArray();
+        $notes = User::find($user['id'])->notes()->whereNull('deleted_at')->get()->toArray();
         // echo "<pre>";
         // print_r($user);
         // print_r($notes);
@@ -26,6 +26,10 @@ class MainController extends Controller
     }
     public function edit($id){
         $idDecode = Operations::decryptId($id);
+
+        if($idDecode == null){
+            return \redirect()->route('home');
+        }
         // Get note
         $note = Note::find($idDecode);
         return \view('edit', ['note' => $note]);
@@ -61,6 +65,9 @@ class MainController extends Controller
             'text_note.min' => 'Note is too short'
         ]);
         $idDecode = Operations::decryptId($request->id);
+        if($idDecode == null){
+            return \redirect()->route('home');
+        }
         // Verify if note exists
         $findNote = Note::find($idDecode);
         if(!$findNote){
@@ -76,8 +83,38 @@ class MainController extends Controller
 
     public function delete($id){
         $idDecode = Operations::decryptId($id);
-        echo $idDecode;
+        if($idDecode == null){
+            return \redirect()->route('home');
+        }
+        if(!$idDecode){
+            return \redirect()->route('home');
+        }
+        // Get note
+        $note = Note::find($idDecode);
+        if(!$note){
+            return \redirect()->route('home');
+        }
+        return view("noteDelete", ['note' => $note]);
     }
+
+    public function deleteSubmit($id){
+        $idDecode = Operations::decryptId($id);
+        if($idDecode == null){
+            return \redirect()->route('home');
+        }
+        if(!$idDecode){
+            return \redirect()->route('home');
+        }
+        // Get note
+        $note = Note::find($idDecode);
+        if(!$note){
+            return \redirect()->route('home');
+        }
+        // Delete note
+        $note->delete();
+        return \redirect()->route('home');
+    }
+
     /**
      * Submits a new note.
      * 

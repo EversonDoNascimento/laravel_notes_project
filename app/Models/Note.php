@@ -3,9 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Note extends Model
-{   protected $table = 'notes';
+{   
+    use SoftDeletes;
+
+    protected $table = 'notes';
     protected $fillable = ['user_id', 'title', 'text'];
     public function user(){
         return $this->belongsTo(User::class);
